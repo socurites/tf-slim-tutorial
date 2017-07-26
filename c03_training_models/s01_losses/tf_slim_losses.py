@@ -64,26 +64,38 @@ predictions = mnist_model.mnist_convnet(images)
 # 손실 함수 정의
 loss = slim.losses.softmax_cross_entropy(predictions, labels)
 
-tf.logging.set_verbosity(tf.logging.INFO)
-
+# multi-taks model의 경우 multi loss 추가한 후 total_loss 활용
 total_loss = slim.losses.get_total_loss()
 
-# Create some summaries to visualize the training process:
-tf.summary.scalar('losses/Total Loss', total_loss)
 
-# Specify the optimizer and create the train op:
+"""
+반복 훈련하는 방법
+MNIST examples
+#
+# 옵티마이저 선택하기
+# 모델 체크포인트 저장하기
+"""
+
+log_dir = '/tmp/tfslim_model/'
+if not tf.gfile.Exists(log_dir):
+  tf.gfile.MakeDirs(log_dir)
+
+tf.logging.set_verbosity(tf.logging.INFO)
 optimizer = tf.train.AdamOptimizer(learning_rate=0.01)
+
 train_op = slim.learning.create_train_op(total_loss, optimizer)
 
-train_dir = '/tmp/tfslim_model/'
-# Run the training:
 final_loss = slim.learning.train(
   train_op,
-  logdir=train_dir,
-  number_of_steps=100,  # For speed, we just do 1 epoch
-  save_summaries_secs=1)
+  log_dir,
+  number_of_steps=100,
+  save_summaries_secs=300,
+  save_interval_secs=600)
 
-print('Finished training. Final batch loss %d' % final_loss)
+print('Finished training. Fianl batch lose %f' %final_loss)
+
+
+
 
 
 #

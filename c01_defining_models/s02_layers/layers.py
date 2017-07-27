@@ -12,7 +12,7 @@ from scipy import misc
 """
 nativeTF에서 컨볼루션 레이어를 정의하는 방법
 # 1. 가중치와 바이어스에 대한 변수를 생성한다
-# 2. 이전 레이어의 출력과 가중치에 대해 컨볼루션 오퍼레이션을 정의한다.
+# 2. 이전 레이어의 출력을 입력으로 사용하여, 가중치에 대해 컨볼루션 오퍼레이션을 정의한다.
 # 3. 위의 출력에 바이어스를 더한다
 # 4. 활성화 함수를 적용한다
 """
@@ -51,7 +51,7 @@ with tf.name_scope('test1') as scope:
 net2 = tf.placeholder(tf.float32, [16, 32, 32, 256])
 with tf.name_scope('test2') as scope:
   for i in range(3):
-    net2 = slim.conv2d(net2, 256, [3,3], scope='conv3_1')
+    net2 = slim.conv2d(net2, 256, [3,3], scope='conv3_%d' % (i+1))
   net2 = slim.max_pool2d(net2, [2,2], scope='pool2')
 
 # TF-Slim repeat 사용
@@ -72,7 +72,7 @@ with g.as_default():
   mlp1 = slim.fully_connected(inputs=mlp1, num_outputs=64, scope='fc/fc_2')
   mlp1 = slim.fully_connected(inputs=mlp1, num_outputs=128, scope='fc/fc_3')
 
-  print([node.name for node in g.as_graph_def().node])
+print([node.name for node in g.as_graph_def().node])
 
 
 # TF-Slim stack 사용
@@ -103,5 +103,7 @@ with g.as_default():
 
 
 # TF-Slim stack 사용
-input_val = tf.placeholder(tf.float32, [16, 32, 32, 8])
-conv2 = slim.stack(input_val, slim.conv2d, [(32,[3,3]), (32,[1,1]), (64,[3,3]), (64,[1,1])], scope='core')
+g = tf.Graph()
+with g.as_default():
+  input_val = tf.placeholder(tf.float32, [16, 32, 32, 8])
+  conv2 = slim.stack(input_val, slim.conv2d, [(32,[3,3]), (32,[1,1]), (64,[3,3]), (64,[1,1])], scope='core')

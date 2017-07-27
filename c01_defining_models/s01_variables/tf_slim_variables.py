@@ -38,7 +38,9 @@ weight_5 = slim.model_variable('w5',
                                   device='/CPU:0')
 
 model_variables = slim.get_model_variables()
-print(model_variables)
+
+print([var.name for var in model_variables])
+
 
 # 일반 변수 생성하기
 my_var_1 = slim.variable('mv1',
@@ -48,5 +50,5 @@ my_var_1 = slim.variable('mv1',
 model_variables = slim.get_model_variables()
 all_variables = slim.get_variables()
 
-print(model_variables)
-print(all_variables)
+print([var.name for var in model_variables])
+print([var.name for var in all_variables])

@@ -14,12 +14,15 @@ native TF에서 스코프를 사용하는 방법
 name_scope()와 variable_scope()의 차이
 # 1. tf.variable_scope()는 스코프 내에 있는 모든 변수에 대해 preifx를 추가
 #    - tf.Variable(), tf.get_variable() 어느 경우로 변수를 생성해도 동일
-# 2. tf.name_scope()는 tf.Variable()로 생서한 변수에 대해서만 preifx를 추가
+# 2. tf.name_scope()는 tf.Variable()로 생성한 변수에 대해서만 preifx를 추가
 #    - tf.get_variable()로 생성한 변수는 스코프에 포함되지 않음(즉 prefix가 추가되지 않음)
 """
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
+"""
+name_scope()와 variable_scope()의 차이 비교
+"""
 def scoping(fn, scope1, scope2, vals):
     with fn(scope1):
         a = tf.Variable(vals[0], name='a')
@@ -39,6 +42,12 @@ with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     print sess.run([d1, d2])
     writer.close()
+
+# 텐서보드 실행
+# $ tensorboard --logdir=/tmp/tf-slim-tutorial
+
+# 텐서보드 접속
+# http://localhost:6006
 
 """
 tf.get_variable

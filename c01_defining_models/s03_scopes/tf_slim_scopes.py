@@ -25,6 +25,7 @@ with tf.variable_scope('test1'):
 
 """
 1차 리팩토링
+# 공통 인자를 변수로 도출
 """
 with tf.variable_scope('test2'):
     padding = 'SAME'
@@ -62,7 +63,7 @@ with tf.variable_scope('test3'):
 
 
 """
-3차 리팩토링: slim.arg_scope() 중첩 가능
+slim.arg_scope() 중첩 가능
 """
 with tf.variable_scope('test5'):
     with slim.arg_scope([slim.conv2d, slim.fully_connected],

@@ -52,25 +52,13 @@ with tf.Session() as sess:
 """
 tf.get_variable
 # 이미 정의된 변수를 가져오거나, 없으면 새로 생성한다
-# 위의 예제에서는 변수 'b'가 정의가 되어 있지 않으므로 새로 생성하다.
+# 위의 예제에서는 변수 'b'가 정의가 되어 있지 않으므로 새로 생성한다.
 # 변수 'b'가 정의되어 있는 경우 name_scope()와 variable_scope()의 차이
 # Ref: https://www.tensorflow.org/api_docs/python/tf/get_variable
 """
 
 b = tf.Variable(initial_value=1, name='b')
 
-def scoping(fn, scope1, scope2, vals):
-    with fn(scope1):
-        a = tf.Variable(vals[0], name='a')
-        b = tf.get_variable('b', initializer=vals[1])
-        c = tf.constant(vals[2], name='c')
-        with fn(scope2):
-            d = tf.add(a * b, c, name='res')
-
-        print '\n  '.join([scope1, a.name, b.name, c.name, d.name]), '\n'
-    return d, b
-
-
-d1, b1 = scoping(tf.variable_scope, 'scope_vars2', 'res', [1, 2, 3])
-# d2 = scoping(tf.name_scope, 'scope_name2', 'res', [1, 2, 3])
+d1 = scoping(tf.variable_scope, 'scope_vars2', 'res', [1, 2, 3])
+d2 = scoping(tf.name_scope, 'scope_name2', 'res', [1, 2, 3])
 # ValueError: Variable b already exists, disallowed

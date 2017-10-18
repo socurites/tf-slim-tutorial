@@ -2,7 +2,7 @@
 __author__ = 'socurites@gmail.com'
 
 """
-손실함수를 정의하는 방법
+모델 평가하기
 MNIST examples
 """
 
@@ -12,7 +12,11 @@ import c01_defining_models.s04_examples.mnist_deep_step_by_step_slim as mnist_mo
 from utils.dataset_utils import load_batch
 from datasets import tf_record_dataset
 
-# create MNIST dataset
+tf.logging.set_verbosity(tf.logging.INFO)
+
+'''
+# 평가 데이터 로드
+'''
 mnist_tfrecord_dataset = tf_record_dataset.TFRecordDataset(
     tfrecord_dir='/home/itrocks/Git/Tensorflow/tf-slim-tutorial/raw_data/mnist/tfrecord',
     dataset_name='mnist',
@@ -21,18 +25,14 @@ mnist_tfrecord_dataset = tf_record_dataset.TFRecordDataset(
 dataset = mnist_tfrecord_dataset.get_split(split_name='validation')
 images, labels, _ = load_batch(dataset)
 
-log_dir = '/tmp/tfslim_model/'
-eval_dir = '/tmp/tfslim_model-eval/'
-if not tf.gfile.Exists(eval_dir):
-    tf.gfile.MakeDirs(eval_dir)
-
-if not tf.gfile.Exists(log_dir):
-    tf.gfile.MakeDirs(log_dir)
-
-tf.logging.set_verbosity(tf.logging.INFO)
-
-
+'''
+# 모델 정의
+'''
 predictions = mnist_model.mnist_convnet(inputs=images, is_training=False)
+
+'''
+# 메트릭 정의
+'''
 predictions = tf.argmax(predictions, 1)
 labels = tf.argmax(labels, 1)
 
@@ -42,8 +42,21 @@ names_to_values, names_to_updates = slim.metrics.aggregate_metric_map({
     # 'eval/Recall@5': slim.metrics.streaming_recall_at_k(predictions, labels, 5),
 })
 
-print('Running evaluation Loop...')
-checkpoint_path = tf.train.latest_checkpoint(log_dir)
+'''
+# 평가하기
+'''
+# logging 경로 설정
+log_dir = '/tmp/tfslim_model/'
+eval_dir = '/tmp/tfslim_model-eval/'
+if not tf.gfile.Exists(eval_dir):
+    tf.gfile.MakeDirs(eval_dir)
+
+if not tf.gfile.Exists(log_dir):
+    raise Exception("trained check point does not exist at %s " % log_dir)
+else:
+    checkpoint_path = tf.train.latest_checkpoint(log_dir)
+
+
 metric_values = slim.evaluation.evaluate_once(
     master='',
     checkpoint_path=checkpoint_path,

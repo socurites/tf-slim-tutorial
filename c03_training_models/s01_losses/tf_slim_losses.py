@@ -10,8 +10,6 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 import c01_defining_models.s04_examples.mnist_deep_step_by_step_slim as mnist_model
 from utils.dataset_utils import load_batch
-
-# Load the images and labels.
 from datasets import tf_record_dataset
 
 # create MNIST dataset
@@ -65,9 +63,9 @@ summary_op = tf.summary.merge_all()
 final_loss = slim.learning.train(
     train_op,
     log_dir,
-    number_of_steps=1000,
+    number_of_steps=2000,
     summary_op=summary_op,
     save_summaries_secs=30,
-    save_interval_secs=60)
+    save_interval_secs=10)
 
 print('Finished training. Fianl batch lose %f' % final_loss)

@@ -12,7 +12,7 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 
 """
-훈련 데이터셋의 구조
+# 훈련 데이터셋의 구조
 raw_data/
   |- flowers/
        |- images/
@@ -33,13 +33,11 @@ raw_data/
            |-- ...
 """
 
-
 # 아래 코드는 flowers/ 데이터를 다운로드 후 TFRecord로 변환하는 코드임
 # 아래 코드를 약간 변형해서 사용
-# https://github.com/tensorflow/models/blob/master/slim/datasets/download_and_convert_flowers.py
+# https://github.com/tensorflow/models/blob/master/slim/download_and_convert_data.py
 
 from datasets import convert_tf_record
-
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -50,7 +48,7 @@ tf.app.flags.DEFINE_string(
 
 tf.app.flags.DEFINE_string(
     'dataset_dir',
-    '/home/itrocks/Git/Tensorflow/tf-slim-tutorial/raw_data/mnist',
+    './raw_data/mnist',
     'A directory containing a set of subdirectories representing class names. Each subdirectory should contain PNG or JPG encoded images.')
 
 tf.app.flags.DEFINE_integer(
@@ -63,15 +61,15 @@ tf.app.flags.DEFINE_float(
     0.2,
     'A ratio of validation datasets for TFRecord files(flaot, 0 ~ 1).')
 
+
 def main(_):
-  if not FLAGS.dataset_name:
-    raise ValueError('You must supply the dataset name with --dataset_name')
-  if not FLAGS.dataset_dir:
-    raise ValueError('You must supply the dataset directory with --dataset_dir')
+    if not FLAGS.dataset_name:
+        raise ValueError('You must supply the dataset name with --dataset_name')
+    if not FLAGS.dataset_dir:
+        raise ValueError('You must supply the dataset directory with --dataset_dir')
 
-
-  convert_tf_record.run(FLAGS.dataset_name, FLAGS.dataset_dir, FLAGS.num_shards, FLAGS.ratio_val)
+    convert_tf_record.run(FLAGS.dataset_name, FLAGS.dataset_dir, FLAGS.num_shards, FLAGS.ratio_val)
 
 
 if __name__ == '__main__':
-  tf.app.run()
+    tf.app.run()

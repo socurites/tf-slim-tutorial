@@ -23,6 +23,8 @@ import matplotlib.pyplot as plt
 """
 name_scope()와 variable_scope()의 차이 비교
 """
+
+
 def scoping(fn, scope1, scope2, vals):
     with fn(scope1):
         a = tf.Variable(vals[0], name='a')
@@ -34,8 +36,9 @@ def scoping(fn, scope1, scope2, vals):
         print '\n  '.join([scope1, a.name, b.name, c.name, d.name]), '\n'
     return d
 
+
 d1 = scoping(tf.variable_scope, 'scope_vars', 'res', [1, 2, 3])
-d2 = scoping(tf.name_scope,     'scope_name', 'res', [1, 2, 3])
+d2 = scoping(tf.name_scope, 'scope_name', 'res', [1, 2, 3])
 
 with tf.Session() as sess:
     writer = tf.summary.FileWriter('/tmp/tf-slim-tutorial', sess.graph)
